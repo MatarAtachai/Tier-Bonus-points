@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrier Technician Reward Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #f4f7fa; }
+        .carrier-blue { background-color: #00447C; }
+        .carrier-blue-dark { background-color: #00335d; }
+        .text-carrier { color: #00447C; }
+        .progress-gradient { background: linear-gradient(90deg, #3b82f6 0%, #00447C 100%); }
+        html { font-size: 18px; }
+        @media (max-width: 640px) { html { font-size: 16px; } }
+        .animate-pop { animation: pop 0.4s ease-out; }
+        @keyframes pop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="carrier-blue text-white shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-1.5 rounded shadow-inner">
+                    <span class="text-carrier font-black text-xl px-1 tracking-tighter">CARRIER</span>
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="text-xl font-bold leading-none text-white">Technician Rewards</h1>
+                    <p class="text-[10px] opacity-70 uppercase tracking-widest mt-1 text-white">Professional Program</p>
+                </div>
+            </div>
+            <a href="https://carrierthailand.com/" target="_blank" class="flex items-center bg-white/10 hover:bg-white/20 transition-all px-4 py-2 rounded-xl border border-white/30 text-sm font-semibold">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18"></path></svg>
+                เว็บไซต์แคเรียร์
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Search Section -->
+        <div id="searchSection" class="bg-white rounded-[2.5rem] shadow-xl p-8 mb-8 text-center border border-slate-100">
+            <div class="mb-6">
+                <h2 class="text-3xl font-extrabold text-slate-800">เช็คแต้มสะสมช่างแคเรียร์</h2>
+                <p class="text-slate-500 mt-2">พิมพ์ชื่อ-นามสกุล ของพี่ช่างเพื่อเข้าสู่ระบบ</p>
+            </div>
+            
+            <div class="relative max-w-md mx-auto">
+                <input type="text" id="searchInput" 
+                    class="w-full pl-14 pr-6 py-5 text-xl rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all shadow-sm font-semibold text-slate-700"
+                    placeholder="ค้นหาชื่อช่าง...">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                    <svg class="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+            <div id="searchResults" class="mt-6 space-y-3 hidden"></div>
+            
+            <div id="dataError" class="mt-6 hidden bg-red-50 border border-red-100 p-6 rounded-2xl text-red-600">
+                <p class="font-bold text-lg mb-1">ไม่สามารถเชื่อมต่อข้อมูลได้!</p>
+                <p class="text-sm">โปรดตรวจสอบการตั้งค่าการแชร์ Google Sheet</p>
+            </div>
+        </div>
+
+        <!-- Personal Dashboard -->
+        <div id="dashboardSection" class="hidden animate-pop">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="backToSearch()" class="flex items-center text-blue-600 font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-all">
+                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg> ค้นหาใหม่
+                </button>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 mb-8">
+                <div class="carrier-blue p-8 md:p-10 text-white relative">
+                    <div class="flex flex-col md:flex-row justify-between items-center relative z-10">
+                        <div class="text-center md:text-left mb-6 md:mb-0">
+                            <p class="text-sm font-medium opacity-80 mb-1 text-white">ยินดีต้อนรับ</p>
+                            <h2 id="userName" class="text-3xl md:text-4xl font-black text-white">---</h2>
+                            <p class="mt-2 text-xs uppercase tracking-widest opacity-60 text-white">Carrier Member</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-[2rem] p-6 text-center min-w-[160px] border border-white/20 shadow-xl">
+                            <p class="text-xs uppercase opacity-70 font-bold mb-1 text-white">สะสมรวม (เครื่อง)</p>
+                            <div class="flex items-baseline justify-center">
+                                <span id="userScore" class="text-6xl font-black text-yellow-400">0</span>
+                                <span class="ml-2 text-lg font-bold text-white">เครื่อง</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="p-8 md:p-10">
+                    <div class="flex justify-between items-end mb-4">
+                        <h3 class="text-xl font-extrabold text-slate-800 tracking-tight">ความคืบหน้าการรับท่อแอร์</h3>
+                        <span id="percentText" class="text-3xl font-black text-carrier">0%</span>
+                    </div>
+                    <div class="h-10 w-full bg-slate-100 rounded-full p-2 mb-10 relative shadow-inner">
+                        <div id="progressBar" class="progress-gradient h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                    </div>
+                    <div id="nextGoalText" class="bg-blue-50 p-5 rounded-2xl border border-blue-100 text-center text-blue-700 font-bold text-lg">กำลังโหลด...</div>
+                </div>
+
+                <div class="p-8 md:p-10 border-t border-slate-50 space-y-4">
+                    <div id="step1" class="flex flex-col sm:flex-row items-center p-6 rounded-3xl border-2 transition-all gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center text-slate-500 text-2xl font-black shrink-0 step-num">1</div>
+                        <div class="flex-1 text-center sm:text-left">
+                            <h4 class="text-xl font-extrabold text-slate-800">ชุดที่ 1</h4>
+                            <p class="text-slate-500 text-sm italic">เป้าหมาย: 10 เครื่อง (เลือกได้ 1 รางวัล)</p>
+                        </div>
+                        <div id="claimArea1"></div>
+                    </div>
+
+                    <div id="step2" class="flex flex-col sm:flex-row items-center p-6 rounded-3xl border-2 transition-all gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center text-slate-500 text-2xl font-black shrink-0 step-num">2</div>
+                        <div class="flex-1 text-center sm:text-left">
+                            <h4 class="text-xl font-extrabold text-slate-800">ชุดที่ 2-3</h4>
+                            <p class="text-slate-500 text-sm italic">เป้าหมาย: 20 เครื่อง (เลือกได้ 2 รางวัล)</p>
+                        </div>
+                        <div id="claimArea2"></div>
+                    </div>
+
+                    <div id="step3" class="flex flex-col sm:flex-row items-center p-6 rounded-3xl border-2 transition-all gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center text-slate-500 text-2xl font-black shrink-0 step-num">3</div>
+                        <div class="flex-1 text-center sm:text-left">
+                            <h4 class="text-xl font-extrabold text-slate-800">ชุดที่ 4-6</h4>
+                            <p class="text-slate-500 text-sm italic">เป้าหมาย: 30 เครื่อง (เลือกได้ 3 รางวัล)</p>
+                        </div>
+                        <div id="claimArea3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Selection -->
+    <div id="selectionModal" class="fixed inset-0 bg-slate-900/90 hidden flex items-center justify-center p-4 z-[100] backdrop-blur-md">
+        <div class="bg-white rounded-[2rem] max-w-lg w-full p-8 shadow-2xl animate-pop overflow-y-auto max-h-[90vh]">
+            <h3 class="text-2xl font-black text-slate-800 mb-1 text-center">เลือกท่อแอร์ที่ต้องการ</h3>
+            <p id="selectionHint" class="text-blue-600 text-lg mb-6 text-center font-bold">เลือกได้สูงสุด 0 รายการ</p>
+            
+            <div id="pipeOptionsList" class="space-y-3"></div>
+
+            <div class="mt-8 bg-yellow-50 p-5 rounded-2xl border border-yellow-200 shadow-inner">
+                <p class="text-yellow-800 font-bold text-sm mb-2 flex items-center">
+                    <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"></path></svg>
+                    โปรดอ่านก่อนยืนยัน
+                </p>
+                <p class="text-xs text-yellow-700 leading-relaxed italic">เมื่อกดยืนยันแล้ว <span class="font-bold underline text-red-600">จะไม่สามารถแก้ไขได้</span> ของรางวัลจะจัดส่งตามที่อยู่ที่ลงทะเบียนไว้ภายใน 30 วัน</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-8">
+                <button onclick="closeSelectionModal()" class="py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl text-lg transition-all hover:bg-slate-200">ยกเลิก</button>
+                <button id="confirmClaimBtn" onclick="submitClaim()" class="py-4 carrier-blue text-white font-black rounded-2xl text-lg shadow-lg hover:carrier-blue-dark transition-all disabled:opacity-50 disabled:grayscale" disabled>ยืนยันการรับ (0)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Success -->
+    <div id="notifModal" class="fixed inset-0 bg-slate-900/90 hidden flex items-center justify-center p-4 z-[110] backdrop-blur-sm">
+        <div class="bg-white rounded-[2.5rem] max-w-sm w-full p-10 text-center shadow-2xl">
+            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h3 class="text-3xl font-black text-slate-800 mb-2">สำเร็จ!</h3>
+            <p class="text-slate-500 mb-8 leading-relaxed">บันทึกข้อมูลการเลือกท่อแอร์เข้าระบบแล้วครับ เจ้าหน้าที่จะดำเนินการจัดส่งให้โดยเร็วที่สุด</p>
+            <button onclick="closeSuccessModal()" class="w-full py-5 carrier-blue text-white font-black rounded-2xl text-xl shadow-lg">ตกลง</button>
+        </div>
+    </div>
+
+    <footer class="py-12 text-center text-slate-400">
+        <p class="text-sm font-bold uppercase tracking-widest text-slate-300 mb-2 tracking-tighter">Carrier Thailand Professional Services</p>
+        <p class="text-[10px]">© 2024 ระบบจัดสรรรางวัลช่างผู้เชี่ยวชาญแคเรียร์</p>
+    </footer>
+
+    <script>
+        // --- ส่วนการตั้งค่า ---
+        const SHEET_ID = '1AUQ0nyF1ImIysqzJnFRRl6NaGgcmOeF9hnnE3lbxHJk';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynuz6PiJvCtnC4ZqIfPB5EitKAb46mNAsQZuZ1y5FLXRF-BMwxp1RxJdpYmCUehGliqg/exec'; 
+        const MAIN_DATA_GID = '0'; 
+        const CLAIMS_GID = 'XXXXXXX'; // เปลี่ยนเป็น GID ของหน้า 'รายการรับรางวัล'
+
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${MAIN_DATA_GID}`;
+        const CLAIMS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${CLAIMS_GID}`;
+
+        const pipeOptions = [
+            { id: 'PIPE1', text: 'ท่อน้ำยาแอร์แคเรียร์ 1/4 x 1/2 ยาว 4ม (PPK1412-772-4M-N)' },
+            { id: 'PIPE2', text: 'ท่อน้ำยาแอร์แคเรียร์ 1/4 x 3/8 ยาว 4ม (PPK1438-772-4M-N)' },
+            { id: 'PIPE3', text: 'ท่อน้ำยาแอร์แคเรียร์ 3/8 x 5/8 ยาว 4ม (PPK3858-772-4M-N)' },
+            { id: 'PIPE4', text: 'ท่อน้ำยาแอร์แคเรียร์ 1/4 x 5/8 ยาว 4ม (PPK1458-772-4M-N)' }
+        ];
+
+        let allTechnicians = [];
+        let claimedHistory = [];
+        let selectedTech = null;
+        let currentClaimLevel = "";
+        let maxAllowedItems = 0;
+        let selectedPipes = [];
+
+        async function initData() {
+            try {
+                const resPoints = await fetch(CSV_URL);
+                if (!resPoints.ok) throw new Error('Cannot fetch points');
+                const pointsCsv = await resPoints.text();
+                processPoints(pointsCsv);
+
+                if (CLAIMS_GID !== 'XXXXXXX') {
+                    const resClaims = await fetch(CLAIMS_CSV_URL);
+                    if (resClaims.ok) {
+                        const claimsCsv = await resClaims.text();
+                        processClaims(claimsCsv);
+                    }
+                }
+            } catch (err) { 
+                console.error("Data loading failed:", err); 
+                document.getElementById('dataError').classList.remove('hidden');
+            }
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            const pattern = /("([^"]*)"|([^,]*))(,|$)/g;
+            text.split('\n').forEach(line => {
+                if (!line.trim()) return;
+                const row = [];
+                let match;
+                while ((match = pattern.exec(line)) !== null) {
+                    let val = match[2] !== undefined ? match[2] : match[3];
+                    if (val !== undefined) row.push(val.trim());
+                    if (match.index === pattern.lastIndex) pattern.lastIndex++;
+                }
+                if (row.length > 0) rows.push(row);
+            });
+            return rows;
+        }
+
+        function processPoints(csv) {
+            const rows = parseCSV(csv);
+            if (rows.length < 2) return;
+            const headers = rows[0];
+            const nameIdx = headers.findIndex(h => h.includes('ชื่อ-นามสกุล'));
+            const modelIdx = headers.findIndex(h => h.includes('รุ่นแอร์'));
+            
+            const validKeywords = ['copper', 'ion', 'x-inverter', 'xinverter', 'x inverter'];
+            const counts = {};
+            for (let i = 1; i < rows.length; i++) {
+                const name = rows[i][nameIdx];
+                const model = rows[i][modelIdx] ? rows[i][modelIdx].toLowerCase() : "";
+                if (name && name !== "" && name !== "ชื่อ-นามสกุล") {
+                    if (validKeywords.some(key => model.includes(key))) {
+                        counts[name] = (counts[name] || 0) + 1;
+                    }
+                }
+            }
+            allTechnicians = Object.keys(counts).map(n => ({ name: n, score: counts[n] }));
+        }
+
+        function processClaims(csv) {
+            const rows = parseCSV(csv);
+            claimedHistory = rows.slice(1).map(r => ({ name: r[1], level: r[3] }));
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const val = e.target.value.trim().toLowerCase();
+            const results = document.getElementById('searchResults');
+            if (val.length < 2) { results.innerHTML = ''; results.classList.add('hidden'); return; }
+            
+            const filtered = allTechnicians.filter(t => t.name.toLowerCase().includes(val));
+            results.classList.remove('hidden');
+            results.innerHTML = filtered.length ? '' : '<p class="py-4 text-slate-400 font-bold italic">ไม่พบรายชื่อในระบบ</p>';
+            
+            filtered.slice(0, 5).forEach(tech => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-6 bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-blue-600 transition-all font-extrabold text-xl flex justify-between items-center group shadow-sm";
+                btn.innerHTML = `<span>${tech.name}</span> <span class="text-blue-600 group-hover:translate-x-1 transition-transform italic text-sm">เลือกดูข้อมูล ></span>`;
+                btn.onclick = () => showDashboard(tech);
+                results.appendChild(btn);
+            });
+        });
+
+        function showDashboard(tech) {
+            selectedTech = tech;
+            document.getElementById('searchSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('userName').innerText = tech.name;
+            document.getElementById('userScore').innerText = tech.score;
+            updateProgress(tech.score);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgress(score) {
+            const percent = Math.min((score / 30) * 100, 100);
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('percentText').innerText = Math.floor(percent) + '%';
+            
+            const nextGoal = document.getElementById('nextGoalText');
+            if (score < 10) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${10 - score}</span> เครื่อง จะได้รับท่อแอร์ชุดที่ 1 ครับ`;
+            else if (score < 20) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${20 - score}</span> เครื่อง จะได้รับเพิ่มเป็น <span class="text-xl font-black">ชุดที่ 2-3</span>`;
+            else if (score < 30) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${30 - score}</span> เครื่อง รับรางวัลสูงสุด <span class="text-xl font-black">ชุดที่ 4-6</span>`;
+            else nextGoal.innerHTML = "ยินดีด้วยครับ! พี่สะสมครบเป้าหมายสูงสุด 30 เครื่องเรียบร้อย!";
+
+            const milestones = [
+                { id: 1, limit: 10, title: 'รางวัลชุดที่ 1', count: 1 },
+                { id: 2, limit: 20, title: 'รางวัลชุดที่ 2-3', count: 2 },
+                { id: 3, limit: 30, title: 'รางวัลชุดที่ 4-6', count: 3 }
+            ];
+
+            milestones.forEach(m => {
+                const step = document.getElementById(`step${m.id}`);
+                const area = document.getElementById(`claimArea${m.id}`);
+                const stepNum = step.querySelector('.step-num');
+                const alreadyClaimed = claimedHistory.some(r => r.name === selectedTech.name && r.level === m.title);
+
+                if (alreadyClaimed) {
+                    step.classList.add('border-green-600', 'bg-green-50/50');
+                    stepNum.classList.add('bg-green-600', 'text-white');
+                    step.classList.remove('opacity-40');
+                    area.innerHTML = `<span class="px-8 py-3 bg-green-100 text-green-700 font-black rounded-2xl border-2 border-green-200">รับรางวัลแล้ว ✅</span>`;
+                } else if (score >= m.limit) {
+                    step.classList.add('border-blue-600', 'bg-blue-50/50');
+                    stepNum.classList.add('carrier-blue', 'text-white');
+                    step.classList.remove('opacity-40');
+                    area.innerHTML = `<button onclick="openSelectionModal('${m.title}', ${m.count})" class="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-black rounded-2xl text-lg shadow-lg hover:bg-blue-700 transition-all">เลือกท่อแอร์</button>`;
+                } else {
+                    step.classList.add('opacity-40');
+                    step.classList.remove('border-blue-600', 'bg-blue-50/50', 'border-green-600', 'bg-green-50/50');
+                    stepNum.classList.remove('bg-green-600', 'carrier-blue', 'text-white');
+                    area.innerHTML = `<div class="px-8 py-3 bg-slate-200 text-slate-500 font-bold rounded-2xl text-sm italic">แต้มยังไม่ถึง</div>`;
+                }
+            });
+        }
+
+        function openSelectionModal(level, count) {
+            currentClaimLevel = level;
+            maxAllowedItems = count;
+            selectedPipes = [];
+            
+            document.getElementById('selectionHint').innerText = `เลือกได้สูงสุด ${count} รายการ`;
+            document.getElementById('confirmClaimBtn').innerText = `ยืนยันการรับ (0/${count})`;
+            document.getElementById('confirmClaimBtn').disabled = true;
+            
+            const list = document.getElementById('pipeOptionsList');
+            list.innerHTML = '';
+            
+            pipeOptions.forEach(opt => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label class="flex items-center p-5 border-2 border-slate-100 rounded-3xl cursor-pointer hover:bg-blue-50 transition-all select-none">
+                        <input type="checkbox" name="pipe" value="${opt.text}" class="hidden" onchange="togglePipeSelection(this, '${opt.text}', '${opt.id}')">
+                        <div class="w-7 h-7 border-2 border-slate-300 rounded-full flex items-center justify-center mr-4 transition-all" id="check-${opt.id}">
+                            <svg class="w-5 h-5 text-white hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg>
+                        </div>
+                        <span class="text-slate-700 font-bold text-sm sm:text-base leading-tight">${opt.text}</span>
+                    </label>
+                `;
+                list.appendChild(div);
+            });
+            document.getElementById('selectionModal').classList.remove('hidden');
+        }
+
+        function togglePipeSelection(checkbox, text, id) {
+            if (checkbox.checked) {
+                if (selectedPipes.length >= maxAllowedItems) {
+                    checkbox.checked = false;
+                    return;
+                }
+                selectedPipes.push({ id, text });
+            } else {
+                selectedPipes = selectedPipes.filter(p => p.id !== id);
+            }
+
+            // Update UI
+            updateSelectionUI();
+        }
+
+        function updateSelectionUI() {
+            pipeOptions.forEach(opt => {
+                const box = document.getElementById(`check-${opt.id}`);
+                const isSelected = selectedPipes.some(p => p.id === opt.id);
+                
+                if (isSelected) {
+                    box.classList.add('bg-blue-600', 'border-blue-600');
+                    box.querySelector('svg').classList.remove('hidden');
+                    box.parentElement.classList.add('border-blue-600', 'bg-blue-50');
+                } else {
+                    box.classList.remove('bg-blue-600', 'border-blue-600');
+                    box.querySelector('svg').classList.add('hidden');
+                    box.parentElement.classList.remove('border-blue-600', 'bg-blue-50');
+                }
+            });
+
+            const btn = document.getElementById('confirmClaimBtn');
+            btn.innerText = `ยืนยันการรับ (${selectedPipes.length}/${maxAllowedItems})`;
+            btn.disabled = selectedPipes.length === 0;
+        }
+
+        async function submitClaim() {
+            if (selectedPipes.length === 0) return;
+            
+            const pipeSummary = selectedPipes.map(p => p.text).join(", ");
+            const btn = document.getElementById('confirmClaimBtn');
+            btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+            const payload = {
+                techName: selectedTech.name,
+                score: selectedTech.score,
+                rewardLevel: currentClaimLevel,
+                pipeSize: pipeSummary,
+                timestamp: new Date().toLocaleString('th-TH')
+            };
+
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                claimedHistory.push({ name: selectedTech.name, level: currentClaimLevel });
+                setTimeout(() => {
+                    document.getElementById('selectionModal').classList.add('hidden');
+                    document.getElementById('notifModal').classList.remove('hidden');
+                    btn.innerText = "ยืนยันการรับ";
+                }, 800);
+            } catch (err) {
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
+                btn.disabled = false; btn.innerText = `ยืนยันการรับ (${selectedPipes.length}/${maxAllowedItems})`;
+            }
+        }
+
+        function backToSearch() {
+            document.getElementById('searchSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+        }
+
+        function closeSelectionModal() { document.getElementById('selectionModal').classList.add('hidden'); }
+        function closeSuccessModal() { 
+            document.getElementById('notifModal').classList.add('hidden');
+            updateProgress(selectedTech.score);
+        }
+
+        initData();
+    </script>
+</body>
+</html>
