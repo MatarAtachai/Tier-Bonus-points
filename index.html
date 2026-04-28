@@ -31,11 +31,11 @@
                     <span class="text-carrier font-black text-xl px-1 tracking-tighter">CARRIER</span>
                 </div>
                 <div class="hidden sm:block">
-                    <h1 class="text-xl font-bold leading-none text-white text-white">Technician Rewards</h1>
-                    <p class="text-[10px] opacity-70 uppercase tracking-widest mt-1 text-white text-white">Professional Program</p>
+                    <h1 class="text-xl font-bold leading-none text-white">Technician Rewards</h1>
+                    <p class="text-[10px] opacity-70 uppercase tracking-widest mt-1 text-white">Professional Program</p>
                 </div>
             </div>
-            <a href="https://carrierthailand.com/" target="_blank" class="flex items-center bg-white/10 hover:bg-white/20 transition-all px-4 py-2 rounded-xl border border-white/30 text-sm font-semibold">
+            <a href="https://carrierthailand.com/" target="_blank" class="flex items-center bg-white/10 hover:bg-white/20 transition-all px-4 py-2 rounded-xl border border-white/30 text-sm font-semibold text-white">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18"></path></svg>
                 เว็บไซต์แคเรียร์
             </a>
@@ -60,10 +60,10 @@
                 </div>
             </div>
             <div id="searchResults" class="mt-6 space-y-3 hidden"></div>
-            
+
             <div id="dataError" class="mt-6 hidden bg-red-50 border border-red-100 p-6 rounded-2xl text-red-600">
-                <p class="font-bold text-lg mb-1 text-red-600">ไม่สามารถเชื่อมต่อข้อมูลได้!</p>
-                <p class="text-sm">โปรดตรวจสอบการตั้งค่าการแชร์ Google Sheet และเลข GID ให้ถูกต้อง</p>
+                <p class="font-bold text-lg mb-1">ไม่สามารถเชื่อมต่อข้อมูลได้!</p>
+                <p class="text-sm">โปรดตรวจสอบการตั้งค่าการแชร์ Google Sheet ให้เป็น "ทุกคนที่มีลิงก์มีสิทธิ์อ่าน"</p>
             </div>
         </div>
 
@@ -105,6 +105,7 @@
                     <div id="nextGoalText" class="bg-blue-50 p-5 rounded-2xl border border-blue-100 text-center text-blue-700 font-bold text-lg">กำลังโหลด...</div>
                 </div>
 
+                <!-- Milestone Reward Cards -->
                 <div class="p-8 md:p-10 border-t border-slate-50 space-y-4">
                     <div id="step1" class="flex flex-col sm:flex-row items-center p-6 rounded-3xl border-2 transition-all gap-4">
                         <div class="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center text-slate-500 text-2xl font-black shrink-0 step-num">1</div>
@@ -141,12 +142,12 @@
     <div id="selectionModal" class="fixed inset-0 bg-slate-900/90 hidden flex items-center justify-center p-4 z-[100] backdrop-blur-md">
         <div class="bg-white rounded-[2rem] max-w-lg w-full p-8 shadow-2xl animate-pop overflow-y-auto max-h-[90vh]">
             <h3 class="text-2xl font-black text-slate-800 mb-1 text-center">เลือกท่อแอร์ที่ต้องการ</h3>
-            <p id="selectionHint" class="text-blue-600 text-lg mb-6 text-center font-bold">เลือกได้สูงสุด 0 รายการ</p>
+            <p id="selectionHint" class="text-blue-600 text-lg mb-6 text-center font-bold font-bold">เลือกได้สูงสุด 0 รายการ</p>
             
             <div id="pipeOptionsList" class="space-y-3"></div>
 
             <div class="mt-8 bg-yellow-50 p-5 rounded-2xl border border-yellow-200 shadow-inner">
-                <p class="text-yellow-800 font-bold text-sm mb-2 flex items-center font-bold">
+                <p class="text-yellow-800 font-bold text-sm mb-2 flex items-center">
                     <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"></path></svg>
                     สำคัญ: โปรดตรวจสอบก่อนยืนยัน
                 </p>
@@ -155,7 +156,7 @@
 
             <div class="grid grid-cols-2 gap-4 mt-8">
                 <button onclick="closeSelectionModal()" class="py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl text-lg transition-all hover:bg-slate-200">ยกเลิก</button>
-                <button id="confirmClaimBtn" onclick="submitClaim()" class="py-4 carrier-blue text-white font-black rounded-2xl text-lg shadow-lg hover:carrier-blue-dark transition-all disabled:opacity-50 disabled:grayscale" disabled>ยืนยันการรับ</button>
+                <button id="confirmClaimBtn" onclick="submitClaim()" class="py-4 carrier-blue text-white font-black rounded-2xl text-lg shadow-lg hover:carrier-blue-dark transition-all disabled:opacity-50 disabled:grayscale font-bold">ยืนยันการรับ</button>
             </div>
         </div>
     </div>
@@ -166,9 +167,9 @@
             <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                 <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            <h3 class="text-3xl font-black text-slate-800 mb-2">สำเร็จ!</h3>
+            <h3 class="text-3xl font-black text-slate-800 mb-2 font-bold">สำเร็จ!</h3>
             <p class="text-slate-500 mb-8 leading-relaxed">บันทึกข้อมูลการเลือกท่อแอร์เข้าระบบแล้วครับ</p>
-            <button onclick="closeSuccessModal()" class="w-full py-5 carrier-blue text-white font-black rounded-2xl text-xl shadow-lg">ตกลง</button>
+            <button onclick="closeSuccessModal()" class="w-full py-5 carrier-blue text-white font-black rounded-2xl text-xl shadow-lg font-bold">ตกลง</button>
         </div>
     </div>
 
@@ -178,17 +179,11 @@
     </footer>
 
     <script>
-        // --- ส่วนการตั้งค่า (พี่ต้องแก้ไขตรงนี้เพื่อให้ระบบทำงานสมบูรณ์) ---
+        // --- ส่วนการตั้งค่า ---
         const SHEET_ID = '1AUQ0nyF1ImIysqzJnFRRl6NaGgcmOeF9hnnE3lbxHJk';
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynuz6PiJvCtnC4ZqIfPB5EitKAb46mNAsQZuZ1y5FLXRF-BMwxp1RxJdpYmCUehGliqg/exec'; 
         const MAIN_DATA_GID = '0'; 
-        
-        /**
-         * 🚩 จุดที่ต้องแก้ไข:
-         * นำเลข GID ของหน้า Sheet "รายการรับรางวัล" มาใส่แทน XXXXXXX
-         * (ดูที่ท้าย URL ในเบราว์เซอร์เวลาคลิกที่หน้า Sheet นั้นๆ)
-         */
-        const CLAIMS_GID = 'XXXXXXX'; 
+        const CLAIMS_GID = '1924317132'; // GID ของหน้า 'รายการรับรางวัล' ตามที่พี่ส่งลิงก์มาล่าสุด
 
         const pipeOptions = [
             { id: 'PIPE1', text: 'ท่อน้ำยาแอร์แคเรียร์ 1/4 x 1/2 ยาว 4ม (PPK1412-772-4M-N)' },
@@ -204,26 +199,23 @@
         let maxAllowedItems = 0;
         let selectedPipes = [];
 
-        // ฟังก์ชันเริ่มโหลดข้อมูล
         async function initData() {
             const timestamp = new Date().getTime(); // ป้องกัน Cache
             const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${MAIN_DATA_GID}&t=${timestamp}`;
             const claimsCsvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${CLAIMS_GID}&t=${timestamp}`;
 
             try {
-                // 1. ดึงข้อมูลช่างและคะแนน
+                // 1. ดึงข้อมูลคะแนน
                 const resPoints = await fetch(csvUrl);
                 if (!resPoints.ok) throw new Error('Points fetch failed');
                 const pointsCsv = await resPoints.text();
                 processPoints(pointsCsv);
 
-                // 2. ดึงประวัติการรับรางวัล (เพื่อล็อกปุ่มไม่ให้กดซ้ำ)
-                if (CLAIMS_GID !== 'XXXXXXX') {
-                    const resClaims = await fetch(claimsCsvUrl);
-                    if (resClaims.ok) {
-                        const claimsCsv = await resClaims.text();
-                        processClaims(claimsCsv);
-                    }
+                // 2. ดึงประวัติการรับรางวัล
+                const resClaims = await fetch(claimsCsvUrl);
+                if (resClaims.ok) {
+                    const claimsCsv = await resClaims.text();
+                    processClaims(claimsCsv);
                 }
             } catch (err) { 
                 console.error("Initialization error:", err); 
@@ -231,7 +223,6 @@
             }
         }
 
-        // ฟังก์ชันแยกข้อมูล CSV
         function parseCSV(text) {
             const rows = [];
             const pattern = /("([^"]*)"|([^,]*))(,|$)/g;
@@ -249,7 +240,6 @@
             return rows;
         }
 
-        // ประมวลผลคะแนนช่าง
         function processPoints(csv) {
             const rows = parseCSV(csv);
             if (rows.length < 2) return;
@@ -257,7 +247,7 @@
             const nameIdx = headers.findIndex(h => h.includes('ชื่อ-นามสกุล'));
             const modelIdx = headers.findIndex(h => h.includes('รุ่นแอร์'));
             
-            // กรองเฉพาะรุ่นที่ระบุ
+            // ปรับปรุงคีย์เวิร์ดให้ตรงกับไฟล์ (Copper-Seal, X-inverter)
             const validKeywords = ['copper', 'ion', 'x-inverter', 'xinverter', 'x inverter'];
             const counts = {};
             for (let i = 1; i < rows.length; i++) {
@@ -272,17 +262,20 @@
             allTechnicians = Object.keys(counts).map(n => ({ name: n, score: counts[n] }));
         }
 
-        // ประมวลผลประวัติการรับรางวัล
         function processClaims(csv) {
             const rows = parseCSV(csv);
-            // คอลัมน์ที่ APScript บันทึกคือ [เวลา, ชื่อช่าง, แต้ม, ระดับรางวัล, รุ่นท่อ]
+            // คาดหวังคอลัมน์จาก APScript: [Timestamp, Name, Score, RewardLevel, PipeSize]
+            // เราสนใจ ชื่อช่าง (Index 1) และ ระดับรางวัล (Index 3)
             claimedHistory = rows.slice(1).map(r => ({ 
                 name: r[1] ? r[1].trim() : "", 
                 level: r[3] ? r[3].trim() : "" 
             }));
+            
+            if (selectedTech) {
+                updateProgress(selectedTech.score);
+            }
         }
 
-        // ระบบค้นหาชื่อ
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const val = e.target.value.trim().toLowerCase();
             const results = document.getElementById('searchResults');
@@ -294,14 +287,13 @@
             
             filtered.slice(0, 5).forEach(tech => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left p-6 bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-blue-600 transition-all font-extrabold text-xl flex justify-between items-center group shadow-sm";
-                btn.innerHTML = `<span>${tech.name}</span> <span class="text-blue-600 group-hover:translate-x-1 transition-transform italic text-sm">ตรวจสอบแต้ม ></span>`;
+                btn.className = "w-full text-left p-6 bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-blue-600 transition-all font-extrabold text-xl flex justify-between items-center group shadow-sm font-bold";
+                btn.innerHTML = `<span>${tech.name}</span> <span class="text-blue-600 group-hover:translate-x-1 transition-transform italic text-sm font-bold">ตรวจสอบแต้ม ></span>`;
                 btn.onclick = () => showDashboard(tech);
                 results.appendChild(btn);
             });
         });
 
-        // แสดงผลหน้าโปรไฟล์ช่าง
         function showDashboard(tech) {
             selectedTech = tech;
             document.getElementById('searchSection').classList.add('hidden');
@@ -312,14 +304,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // คำนวณความคืบหน้าและปุ่มรับรางวัล
         function updateProgress(score) {
             const percent = Math.min((score / 30) * 100, 100);
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('percentText').innerText = Math.floor(percent) + '%';
             
             const nextGoal = document.getElementById('nextGoalText');
-            if (score < 10) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${10 - score}</span> เครื่อง จะได้รับท่อแอร์ชุดแรกครับ`;
+            if (score < 10) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${10 - score}</span> เครื่อง จะได้รับท่อแอร์ชุดที่ 1 ครับ`;
             else if (score < 20) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${20 - score}</span> เครื่อง เพื่อรับเพิ่มอีก <span class="text-xl font-black">2 ชุด</span>`;
             else if (score < 30) nextGoal.innerHTML = `สะสมอีก <span class="text-2xl font-black">${30 - score}</span> เครื่อง เพื่อรับสูงสุด <span class="text-xl font-black">6 ชุด</span>`;
             else nextGoal.innerHTML = "ยินดีด้วยครับ! พี่สะสมครบเป้าหมายสูงสุดเรียบร้อย!";
@@ -335,7 +326,7 @@
                 const area = document.getElementById(`claimArea${m.id}`);
                 const stepNum = step.querySelector('.step-num');
                 
-                // ตรวจสอบว่าเคยรับระดับนี้ไปหรือยัง (ใช้ชื่อและระดับรางวัลเช็ค)
+                // ตรวจสอบจากประวัติการเคลม (Case-insensitive)
                 const alreadyClaimed = claimedHistory.some(r => 
                     r.name.toLowerCase() === selectedTech.name.toLowerCase() && 
                     r.level === m.title
@@ -345,12 +336,12 @@
                     step.classList.add('border-green-600', 'bg-green-50/50');
                     stepNum.classList.add('bg-green-600', 'text-white');
                     step.classList.remove('opacity-40');
-                    area.innerHTML = `<span class="px-8 py-3 bg-green-100 text-green-700 font-black rounded-2xl border-2 border-green-200">รับรางวัลแล้ว ✅</span>`;
+                    area.innerHTML = `<span class="px-8 py-3 bg-green-100 text-green-700 font-black rounded-2xl border-2 border-green-200 shadow-sm font-bold">รับรางวัลแล้ว ✅</span>`;
                 } else if (score >= m.limit) {
                     step.classList.add('border-blue-600', 'bg-blue-50/50');
                     stepNum.classList.add('carrier-blue', 'text-white');
                     step.classList.remove('opacity-40');
-                    area.innerHTML = `<button onclick="openSelectionModal('${m.title}', ${m.count})" class="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-black rounded-2xl text-lg shadow-lg hover:bg-blue-700 transition-all">เลือกท่อแอร์</button>`;
+                    area.innerHTML = `<button onclick="openSelectionModal('${m.title}', ${m.count})" class="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-black rounded-2xl text-lg shadow-lg hover:bg-blue-700 transition-all font-bold">เลือกท่อแอร์</button>`;
                 } else {
                     step.classList.add('opacity-40');
                     step.classList.remove('border-blue-600', 'bg-blue-50/50', 'border-green-600', 'bg-green-50/50');
@@ -360,7 +351,6 @@
             });
         }
 
-        // เปิด Modal เลือกท่อแอร์
         function openSelectionModal(level, count) {
             currentClaimLevel = level;
             maxAllowedItems = count;
@@ -381,7 +371,7 @@
                         <div class="w-7 h-7 border-2 border-slate-300 rounded-full flex items-center justify-center mr-4 transition-all" id="check-${opt.id}">
                             <svg class="w-5 h-5 text-white hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg>
                         </div>
-                        <span class="text-slate-700 font-bold text-sm sm:text-base leading-tight">${opt.text}</span>
+                        <span class="text-slate-700 font-bold text-sm sm:text-base leading-tight font-bold">${opt.text}</span>
                     </label>
                 `;
                 list.appendChild(div);
@@ -389,7 +379,6 @@
             document.getElementById('selectionModal').classList.remove('hidden');
         }
 
-        // จัดการการเลือกท่อแอร์ (Checkbox)
         function togglePipeSelection(checkbox, text, id) {
             if (checkbox.checked) {
                 if (selectedPipes.length >= maxAllowedItems) {
@@ -403,7 +392,6 @@
             updateSelectionUI();
         }
 
-        // อัปเดตหน้าตาตัวเลือกที่กด
         function updateSelectionUI() {
             pipeOptions.forEach(opt => {
                 const box = document.getElementById(`check-${opt.id}`);
@@ -425,7 +413,6 @@
             btn.disabled = selectedPipes.length === 0;
         }
 
-        // ส่งข้อมูลเคลมไปยัง Google Sheets
         async function submitClaim() {
             if (selectedPipes.length === 0) return;
             
@@ -443,7 +430,7 @@
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                // เพิ่มข้อมูลเข้าประวัติจำลองทันทีเพื่อให้ UI เปลี่ยนทันที
+                // เพิ่มข้อมูลเข้าประวัติจำลองทันที
                 claimedHistory.push({ name: selectedTech.name, level: currentClaimLevel });
                 
                 setTimeout(() => {
@@ -462,8 +449,7 @@
             document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('searchInput').value = '';
             document.getElementById('searchResults').innerHTML = '';
-            // โหลดข้อมูลประวัติใหม่เผื่อมีการอัปเดต
-            initData(); 
+            initData(); // โหลดใหม่ทุกครั้งที่กลับหน้าแรก
         }
 
         function closeSelectionModal() { document.getElementById('selectionModal').classList.add('hidden'); }
@@ -472,7 +458,6 @@
             updateProgress(selectedTech.score);
         }
 
-        // เริ่มต้นโหลดข้อมูลทันทีที่เปิดหน้าเว็บ
         initData();
     </script>
 </body>
