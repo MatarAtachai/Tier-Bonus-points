@@ -63,7 +63,7 @@
             
             <div id="dataError" class="mt-6 hidden bg-red-50 border border-red-100 p-6 rounded-2xl text-red-600">
                 <p class="font-bold text-lg mb-1">ไม่สามารถเชื่อมต่อข้อมูลได้!</p>
-                <p class="text-sm">โปรดตรวจสอบการตั้งค่าการแชร์ Google Sheet</p>
+                <p class="text-sm">โปรดตรวจสอบการตั้งค่าการแชร์ Google Sheet และเลข GID</p>
             </div>
         </div>
 
@@ -178,14 +178,17 @@
     </footer>
 
     <script>
-        // --- ส่วนการตั้งค่า ---
+        // --- ส่วนการตั้งค่า (โปรดตรวจสอบจุดนี้) ---
         const SHEET_ID = '1AUQ0nyF1ImIysqzJnFRRl6NaGgcmOeF9hnnE3lbxHJk';
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynuz6PiJvCtnC4ZqIfPB5EitKAb46mNAsQZuZ1y5FLXRF-BMwxp1RxJdpYmCUehGliqg/exec'; 
         const MAIN_DATA_GID = '0'; 
-        const CLAIMS_GID = 'XXXXXXX'; // เปลี่ยนเป็น GID ของหน้า 'รายการรับรางวัล'
-
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${MAIN_DATA_GID}`;
-        const CLAIMS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${CLAIMS_GID}`;
+        
+        /**
+         * สำคัญมาก: เพื่อป้องกันการกดรับรางวัลซ้ำหลังรีเฟรชหน้าจอ 
+         * พี่ต้องนำเลข GID ของหน้า Sheet "รายการรับรางวัล" มาใส่ที่นี่
+         * วิธีดู: คลิกที่ Tab "รายการรับรางวัล" ใน Google Sheet แล้วดูที่ท้าย URL ตรง &gid=XXXXXX
+         */
+        const CLAIMS_GID = 'XXXXXXX'; 
 
         const pipeOptions = [
             { id: 'PIPE1', text: 'ท่อน้ำยาแอร์แคเรียร์ 1/4 x 1/2 ยาว 4ม (PPK1412-772-4M-N)' },
@@ -202,14 +205,21 @@
         let selectedPipes = [];
 
         async function initData() {
+            // ป้องกัน Cache โดยการเพิ่ม Timestamp ต่อท้าย URL
+            const timestamp = new Date().getTime();
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${MAIN_DATA_GID}&t=${timestamp}`;
+            const claimsCsvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${CLAIMS_GID}&t=${timestamp}`;
+
             try {
-                const resPoints = await fetch(CSV_URL);
+                // 1. ดึงคะแนนสะสม
+                const resPoints = await fetch(csvUrl);
                 if (!resPoints.ok) throw new Error('Cannot fetch points');
                 const pointsCsv = await resPoints.text();
                 processPoints(pointsCsv);
 
+                // 2. ดึงประวัติการรับรางวัล (เพื่อตรวจสอบคนเคยรับแล้ว)
                 if (CLAIMS_GID !== 'XXXXXXX') {
-                    const resClaims = await fetch(CLAIMS_CSV_URL);
+                    const resClaims = await fetch(claimsCsvUrl);
                     if (resClaims.ok) {
                         const claimsCsv = await resClaims.text();
                         processClaims(claimsCsv);
@@ -261,6 +271,8 @@
 
         function processClaims(csv) {
             const rows = parseCSV(csv);
+            // คอลัมน์ที่ APScript บันทึกคือ [เวลา, ชื่อช่าง, แต้ม, ระดับรางวัล, รุ่นท่อ]
+            // เราสนใจชื่อช่าง (Index 1) และ ระดับรางวัล (Index 3)
             claimedHistory = rows.slice(1).map(r => ({ name: r[1], level: r[3] }));
         }
 
@@ -313,6 +325,8 @@
                 const step = document.getElementById(`step${m.id}`);
                 const area = document.getElementById(`claimArea${m.id}`);
                 const stepNum = step.querySelector('.step-num');
+                
+                // ตรวจสอบจากประวัติ (claimedHistory) ว่าคนนี้เคยรับไปหรือยัง
                 const alreadyClaimed = claimedHistory.some(r => r.name === selectedTech.name && r.level === m.title);
 
                 if (alreadyClaimed) {
@@ -415,7 +429,9 @@
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                // เพิ่มข้อมูลเข้าประวัติจำลองทันทีเพื่อให้ UI เปลี่ยนโดยไม่ต้องรอโหลดใหม่
                 claimedHistory.push({ name: selectedTech.name, level: currentClaimLevel });
+                
                 setTimeout(() => {
                     document.getElementById('selectionModal').classList.add('hidden');
                     document.getElementById('notifModal').classList.remove('hidden');
